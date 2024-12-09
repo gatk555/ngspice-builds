@@ -28,7 +28,7 @@ jobs:
           echo Create README.ngspice
           echo 'This binary package of ngspice was built at https://github.com/gatk555/ngspice.' > /usr/local/README.ngspice
           echo 'The source code came from the master branch.' >> /usr/local/README.ngspice
-          echo 'Install to /usr/local.' > /usr/local/README.ngspice
+          echo 'Install to /usr/local.' >> /usr/local/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v4
         with:
@@ -66,9 +66,54 @@ jobs:
           echo Create README.ngspice
           echo 'This binary package of ngspice was built at https://github.com/gatk555/ngspice.' > build/README.ngspice
           echo 'The source code came from the master branch.' > build/README.ngspice
-          echo 'Install to /usr/local.' > build/README.ngspice
+          echo 'Install to /usr/local.' >> build/README.ngspice
       - name: Save X86_64
         uses: actions/upload-artifact@v4
         with:
           name: Ngspice-43, Macos X86_64
           path: build
+  build-win_msys:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >
+            base-devel
+            mingw-w64-x86_64-toolchain
+            autotools
+      - name: Flex and Bison
+        shell: cmd
+        run: |
+          md ..\flex-bison
+          cd ..\flex-bison
+          curl.exe -L -O "https://github.com/lexxmark/winflexbison/releases/download/v2.5.25/win_flex_bison-2.5.25.zip"
+          unzip win_flex_bison-2.5.25
+      - uses: actions/checkout@v4
+        with:
+          repository: gatk555/ngspice
+          ref: master
+      - name: Build
+        run: |
+          ./compile_min.sh
+          echo Create README.ngspice
+          echo This binary build of ngspice was built at https://github.com/gatk555/ngspice. > C:\Spice64\README.ngspice
+          echo The source code came from the master branch. >> C:\Spice64\README.ngspice
+          echo Install to C:\Spice64\. >> C:\Spice64\README.ngspice
+      - uses: actions/checkout@v4
+        with:
+          repository: gatk555/test
+      - name: Add DLL
+        shell: cmd
+        run: |
+          unzip libomp.zip
+          copy libomp140.x86_64.dll C:\Spice64\bin\vcomp140.dll
+      - name: Save
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ngspice-43, Windows 64-bit with MSYS and MINGW64
+          path: C:\Spice64
