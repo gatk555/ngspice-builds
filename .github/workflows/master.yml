@@ -32,7 +32,7 @@ jobs:
       - name: Save
         uses: actions/upload-artifact@v4
         with:
-          name: Ngspice-43, Linux X86-64
+          name: Ngspice-44, Linux X86-64
           path: /usr/local
   build-macos-x86_64:
     runs-on: macos-13
@@ -70,7 +70,7 @@ jobs:
       - name: Save X86_64
         uses: actions/upload-artifact@v4
         with:
-          name: Ngspice-43, Macos X86_64
+          name: Ngspice-44, Macos X86_64
           path: build
   build-win_msys:
     runs-on: windows-latest
@@ -115,5 +115,5 @@ jobs:
       - name: Save
         uses: actions/upload-artifact@v4
         with:
-          name: Ngspice-43, Windows 64-bit with MSYS and MINGW64
+          name: Ngspice-44, Windows 64-bit with MSYS and MINGW64
           path: C:\Spice64
