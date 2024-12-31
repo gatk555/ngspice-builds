@@ -80,11 +80,11 @@ jobs:
     steps:
       - uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: UCRT64
           update: true
           install: >
             base-devel
-            mingw-w64-x86_64-toolchain
+            mingw-w64-ucrt-x86_64-toolchain
             autotools
       - name: Flex and Bison
         shell: cmd
@@ -100,20 +100,16 @@ jobs:
       - name: Build
         run: |
           ./compile_min.sh
+          cp /ucrt64/bin/libgomp-1.dll /C/Spice64/bin
+          cp /ucrt64/bin/libstdc++-6.dll /C/Spice64/bin
+          cp /ucrt64/bin/libgcc_s_seh-1.dll /C/Spice64/bin
+          cp /ucrt64/bin/libwinpthread-1.dll /C/Spice64/bin
           echo Create README.ngspice
-          echo This binary build of ngspice was built at https://github.com/gatk555/ngspice. > C:\Spice64\README.ngspice
-          echo The source code came from the master branch. >> C:\Spice64\README.ngspice
-          echo Install to C:\Spice64\. >> C:\Spice64\README.ngspice
-      - uses: actions/checkout@v4
-        with:
-          repository: gatk555/test
-      - name: Add DLL
-        shell: cmd
-        run: |
-          unzip libomp.zip
-          copy libomp140.x86_64.dll C:\Spice64\bin\vcomp140.dll
+          echo This binary build of ngspice was built at https://github.com/gatk555/ngspice. > /C/Spice64/README.ngspice
+          echo The source code came from the master branch. >> /C/Spice64/README.ngspice
+          echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v4
         with:
-          name: Ngspice-44, Windows 64-bit with MSYS and MINGW64
+          name: Ngspice-44, Windows 64-bit with MSYS and UCRT64
           path: C:\Spice64
