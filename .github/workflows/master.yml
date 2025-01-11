@@ -2,7 +2,7 @@ name: Build master branch
 on:
   workflow_dispatch:
   schedule:
-    - cron: '41 7 9 1,4,7,10 *'
+    - cron: '41 7 9 2,5,8,11 *'
 
 jobs:
   build-lin64:
@@ -32,7 +32,7 @@ jobs:
       - name: Save
         uses: actions/upload-artifact@v4
         with:
-          name: Ngspice-44, Linux X86-64
+          name: Ngspice-44.2, Linux X86-64
           path: /usr/local
   build-macos-x86_64:
     runs-on: macos-13
@@ -70,7 +70,7 @@ jobs:
       - name: Save X86_64
         uses: actions/upload-artifact@v4
         with:
-          name: Ngspice-44, Macos X86_64
+          name: Ngspice-44.2, Macos X86_64
           path: build
   build-win_msys:
     runs-on: windows-latest
@@ -111,5 +111,46 @@ jobs:
       - name: Save
         uses: actions/upload-artifact@v4
         with:
-          name: Ngspice-44, Windows 64-bit with MSYS and UCRT64
+          name: Ngspice-44.2, Windows 64-bit with MSYS and UCRT64
+          path: C:\Spice64
+  build-win_mingw:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >
+            base-devel
+            mingw-w64-x86_64-toolchain
+            autotools
+      - name: Flex and Bison
+        shell: cmd
+        run: |
+          md ..\flex-bison
+          cd ..\flex-bison
+          curl.exe -L -O "https://github.com/lexxmark/winflexbison/releases/download/v2.5.25/win_flex_bison-2.5.25.zip"
+          unzip win_flex_bison-2.5.25
+      - uses: actions/checkout@v4
+        with:
+          repository: gatk555/ngspice
+          ref: master
+      - name: Build
+        run: |
+          ./compile_min.sh
+          cp /mingw64/bin/libgomp-1.dll /C/Spice64/bin
+          cp /mingw64/bin/libstdc++-6.dll /C/Spice64/bin
+          cp /mingw64/bin/libgcc_s_seh-1.dll /C/Spice64/bin
+          cp /mingw64/bin/libwinpthread-1.dll /C/Spice64/bin
+          echo Create README.ngspice
+          echo This binary build of ngspice was built at https://github.com/gatk555/ngspice. > /C/Spice64/README.ngspice
+          echo The source code came from the master branch. >> /C/Spice64/README.ngspice
+          echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
+      - name: Save
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ngspice-44.2, Windows 64-bit with MSYS and MINGW64
           path: C:\Spice64
