@@ -2,11 +2,11 @@ name: Build master branch
 on:
   workflow_dispatch:
   schedule:
-    - cron: '41 7 9 2,5,8,11 *'
+    - cron: '41 7 9 1,3,5,7,9,11 *'
 
 jobs:
   build-lin64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,9 +25,15 @@ jobs:
       - name: Build
         run: |
           ./compile_linux.sh
+          mkdir releasesh
+          cd releasesh
+          ../configure --with-ngshared --enable-cider --prefix=/usr/local CFLAGS="-m64 -O2" LDFLAGS="-m64 -s"
+          make -j4
+          make install
           echo Create README.ngspice
-          echo 'This binary package of ngspice was built at https://github.com/gatk555/ngspice.' > /usr/local/README.ngspice
+          echo 'This binary package of an Ngspice release was built at https://github.com/gatk555/ngspice.' > /usr/local/README.ngspice
           echo 'The source code came from the master branch.' >> /usr/local/README.ngspice
+          echo >> /usr/local/README.ngspice
           echo 'Install to /usr/local.' >> /usr/local/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v4
@@ -59,19 +65,63 @@ jobs:
           sudo make install
           cd ..
           mkdir build
-          for i in bin lib share ; do
+          for i in bin lib share share/man/man1 ; do
             mkdir -p build/$i
-            cp -r /usr/local/$i/ngspice build/$i/
+            cp -r /usr/local/$i/ngspice* build/$i/
           done
           echo Create README.ngspice
-          echo 'This binary package of ngspice was built at https://github.com/gatk555/ngspice.' > build/README.ngspice
-          echo 'The source code came from the master branch.' > build/README.ngspice
+          echo 'This binary package of an Ngspice release was built at https://github.com/gatk555/ngspice.' > build/README.ngspice
+          echo 'The source code came from the master branch.' >> build/README.ngspice
+          echo >> build/README.ngspice
           echo 'Install to /usr/local.' >> build/README.ngspice
       - name: Save X86_64
         uses: actions/upload-artifact@v4
         with:
           name: Ngspice-44.2, Macos X86_64
           path: build
+  build-macos-arm64:
+    runs-on: macos-14
+    outputs:
+      HEAD_DESC: ${{ steps.set-output.outputs.HEAD_DESC }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: gatk555/ngspice
+          ref: master
+      - name: Install Dependencies
+        run: |
+          brew install automake libtool ncurses bison libxaw
+          # compile_macos_gcc.sh expects this path.  Kludge it.
+          sudo mkdir -p /opt/X11/include
+          sudo ln -s /usr/local/include/freetype2 /opt/X11/include/freetype2
+      - name: Build arm64
+        run: |
+          export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+          ./autogen.sh
+          mkdir release
+          cd release
+          ../configure  --disable-openmp --with-x --enable-cider --with-readline=/opt/homebrew/opt/readline CC=clang CFLAGS="-m64 -O2 -I/opt/X11/include/freetype2 -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/ncurses/include" LDFLAGS="-m64 -L/opt/homebrew/opt/readline/lib -L/usr/local/lib"
+          make -j3
+          if [ ! -f src/ngspice ]; then false; fi
+      - name: Install arm64
+        run: |
+          cd release
+          sudo make install
+          mkdir build
+          for i in bin lib share share/man/man1 ; do
+            mkdir -p build/$i
+            cp -r /usr/local/$i/ngspice* build/$i/
+          done
+          echo Create README.ngspice
+          echo 'This binary package of ngspice was built at https://github.com/gatk555/ngspice.' > build/README.ngspice
+          echo The source code came from the master branch. >> build/README.ngspice
+          echo >> build/README.ngspice
+          echo 'Install to /usr/local.' >> build/README.ngspice
+      - name: Save arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ngspice-44.2, Macos ARM64
+          path: release/build
   build-win_msys:
     runs-on: windows-latest
     defaults:
@@ -105,8 +155,9 @@ jobs:
           cp /ucrt64/bin/libgcc_s_seh-1.dll /C/Spice64/bin
           cp /ucrt64/bin/libwinpthread-1.dll /C/Spice64/bin
           echo Create README.ngspice
-          echo This binary build of ngspice was built at https://github.com/gatk555/ngspice. > /C/Spice64/README.ngspice
+          echo 'This binary package of an Ngspice release was built at https://github.com/gatk555/ngspice.' > /C/Spice64/README.ngspice
           echo The source code came from the master branch. >> /C/Spice64/README.ngspice
+          echo >> /C/Spice64/README.ngspice
           echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v4
@@ -146,8 +197,9 @@ jobs:
           cp /mingw64/bin/libgcc_s_seh-1.dll /C/Spice64/bin
           cp /mingw64/bin/libwinpthread-1.dll /C/Spice64/bin
           echo Create README.ngspice
-          echo This binary build of ngspice was built at https://github.com/gatk555/ngspice. > /C/Spice64/README.ngspice
+          echo 'This binary package of an Ngspice release was built at https://github.com/gatk555/ngspice.' > /C/Spice64/README.ngspice
           echo The source code came from the master branch. >> /C/Spice64/README.ngspice
+          echo >> /C/Spice64/README.ngspice
           echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v4
