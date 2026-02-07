@@ -41,7 +41,7 @@ jobs:
           name: Ngspice-44.2, Linux X86-64
           path: /usr/local
   build-macos-x86_64:
-    runs-on: macos-13
+    runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
         with:
