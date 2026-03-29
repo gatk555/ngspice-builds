@@ -8,7 +8,7 @@ jobs:
   build-lin64:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: gatk555/ngspice
           ref: master
@@ -36,14 +36,14 @@ jobs:
           echo >> /usr/local/README.ngspice
           echo 'Install to /usr/local.' >> /usr/local/README.ngspice
       - name: Save
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Ngspice-44.2, Linux X86-64
           path: /usr/local
   build-macos-x86_64:
     runs-on: macos-15-intel
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: gatk555/ngspice
           ref: master
@@ -75,7 +75,7 @@ jobs:
           echo >> build/README.ngspice
           echo 'Install to /usr/local.' >> build/README.ngspice
       - name: Save X86_64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Ngspice-44.2, Macos X86_64
           path: build
@@ -84,7 +84,7 @@ jobs:
     outputs:
       HEAD_DESC: ${{ steps.set-output.outputs.HEAD_DESC }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: gatk555/ngspice
           ref: master
@@ -118,7 +118,7 @@ jobs:
           echo >> build/README.ngspice
           echo 'Install to /usr/local.' >> build/README.ngspice
       - name: Save arm64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Ngspice-44.2, Macos ARM64
           path: release/build
@@ -143,7 +143,7 @@ jobs:
           cd ..\flex-bison
           curl.exe -L -O "https://github.com/lexxmark/winflexbison/releases/download/v2.5.25/win_flex_bison-2.5.25.zip"
           unzip win_flex_bison-2.5.25
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: gatk555/ngspice
           ref: master
@@ -160,7 +160,7 @@ jobs:
           echo >> /C/Spice64/README.ngspice
           echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
       - name: Save
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Ngspice-44.2, Windows 64-bit with MSYS and UCRT64
           path: C:\Spice64
@@ -185,7 +185,7 @@ jobs:
           cd ..\flex-bison
           curl.exe -L -O "https://github.com/lexxmark/winflexbison/releases/download/v2.5.25/win_flex_bison-2.5.25.zip"
           unzip win_flex_bison-2.5.25
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: gatk555/ngspice
           ref: master
@@ -202,7 +202,7 @@ jobs:
           echo >> /C/Spice64/README.ngspice
           echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
       - name: Save
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Ngspice-44.2, Windows 64-bit with MSYS and MINGW64
           path: C:\Spice64
