@@ -268,10 +268,10 @@ jobs:
           move bin\ngspice.exe bin\ngspice_con.exe
           move bin\gui.exe bin\ngspice.exe
           echo Create README.ngspice
-          echo 'This binary package of Ngspice version 46 was built at https://github.com/gatk555/ngspice.' > /C/Spice64/README.ngspice
-          echo The source code came from the master branch. >> /C/Spice64/README.ngspice
-          echo >> /C/Spice64/README.ngspice
-          echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
+          echo 'This binary package of Ngspice version 46 was built at https://github.com/gatk555/ngspice.' > C:\Spice64\README.ngspice
+          echo The source code came from the master branch. >> C:\Spice64\README.ngspice
+          echo >> C:\Spice64\README.ngspice
+          echo Install to C:\\Spice64. >> C:\Spice64\README.ngspice
       - uses: actions/checkout@v6
         with:
           repository: gatk555/test
