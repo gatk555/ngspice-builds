@@ -1,0 +1,156 @@
+name: Build iverilog with libvvp
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 11 7,22 * *'
+jobs:
+  build-lin64:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: steveicarus/iverilog
+          ref: master
+      - name: Install dependencies
+        run: |
+          sudo apt-get install gperf
+      - name: Build, check and install
+        run: |
+          export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+          sh autoconf.sh
+          ./configure --enable-libvvp
+          make -j$(nproc)
+          sudo make install
+          make check
+      - name: Extract
+        run: |
+          mkdir -p save/bin save/lib save/include/iverilog
+          cp /usr/local/bin/iveri* save/bin
+          cp /usr/local/bin/vvp save/bin
+          cp /usr/local/include/iverilog/* save/include/iverilog
+          cp -r /usr/local/lib/ivl save/lib
+          for i in libvpi.a libvvp.so ; do cp /usr/local/lib/$i save/lib ; done
+      - name: Save
+        uses: actions/upload-artifact@v6
+        with:
+          name: Icarus Verilog with libvvp Linux-X64
+          path: save
+
+  build-mac-arm:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: steveicarus/iverilog
+          ref: master
+      - name: Install dependencies
+        run: |
+          brew install automake bison
+      - name: Build, check and install
+        run: |
+          export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+          sh autoconf.sh
+          ./configure --enable-libvvp
+          make -j$(nproc)
+          sudo make install
+          make check
+      - name: Extract
+        run: |
+          mkdir -p save/bin save/lib save/include/iverilog
+          cp /usr/local/bin/iveri* save/bin
+          cp /usr/local/bin/vvp save/bin
+          cp /usr/local/include/iverilog/* save/include/iverilog
+          cp -r /usr/local/lib/ivl save/lib
+          for i in libvpi.a libvvp.so ; do cp /usr/local/lib/$i save/lib ; done
+      - name: Save
+        uses: actions/upload-artifact@v6
+        with:
+          name: Icarus Verilog with libvvp MacOS-ARM64
+          path: save
+
+  build-macos-x86_64:
+    runs-on: macos-15-intel
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: steveicarus/iverilog
+          ref: master
+      - name: Install Dependencies
+        run: |
+          brew install bison
+      - name: Build, check and install
+        run: |
+          export PATH="/usr/local/opt/bison/bin:$PATH"
+          which bison
+          autoconf
+          ./configure --enable-libvvp
+          make -j$(nproc)
+          sudo make install
+          make check
+      - name: Extract
+        run: |
+          mkdir -p save/bin save/lib save/include/iverilog
+          cp /usr/local/bin/iveri* save/bin
+          cp /usr/local/bin/vvp save/bin
+          cp /usr/local/include/iverilog/* save/include/iverilog
+          cp -r /usr/local/lib/ivl save/lib
+          for i in libvpi.a libvvp.so ; do cp /usr/local/lib/$i save/lib ; done
+      - name: Save
+        uses: actions/upload-artifact@v6
+        with:
+          name: Icarus Verilog with libvvp, MacOS-X64
+          path: save
+
+  win:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+    name: VVP Windows
+    defaults:
+      run:
+        shell: msys2 {0}
+    env:
+      MINGW_ARCH: UCRT64
+    steps:
+      - name: Tweak git
+        shell: bash
+        run: git config --global core.autocrlf input
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >
+            autotools
+            base-devel
+            binutils
+            gcc
+            git
+            gperf
+            python-pip
+            mingw-w64-ucrt-x86_64-toolchain
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '>=3.5'
+      - uses: actions/checkout@v6
+        with:
+          repository: steveicarus/iverilog
+          ref: master
+      - name: Build and check
+        run: |
+          sh autoconf.sh
+          ./configure --enable-libvvp --prefix=C:\\ivl
+          make -j$(nproc) check
+          make install
+      - name: Save
+        uses: actions/upload-artifact@v6
+        with:
+          name: Iverilog with libvvp, Windows 64-bit (UCRT64)
+          path: C:\ivl
+      - name: Package
+        run: |
+          cd msys2
+          makepkg-mingw --noconfirm --noprogressbar -sCLf
+      - uses: actions/upload-artifact@v6
+        with:
+          name: Iverilog with libvvp, MSYS (UCRT64) package for Windows 64-bit
+          path: msys2/*.zst
