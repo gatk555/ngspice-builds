@@ -20,3 +20,6 @@ and for a Macintosh also:
 The packaged files are intended for installation in /usr/local or
 C:\Spice64.  If expanded elsewhere, environment variables must be set
 to indicate the location.
+
+Also available are regular builds of Icarus Verilog, compiled with the
+libvvp option for use in co-simulation with Ngspice.
