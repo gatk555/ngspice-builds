@@ -29,7 +29,7 @@ jobs:
           cp /usr/local/bin/vvp save/bin
           cp /usr/local/include/iverilog/* save/include/iverilog
           cp -r /usr/local/lib/ivl save/lib
-          for i in libvpi.a libvvp.so ; do cp /usr/local/lib/$i save/lib ; done
+          for i in 'libvpi.*' 'libvvp.*' ; do cp /usr/local/lib/$i save/lib ; done
       - name: Save
         uses: actions/upload-artifact@v6
         with:
@@ -61,7 +61,7 @@ jobs:
           cp /usr/local/bin/vvp save/bin
           cp /usr/local/include/iverilog/* save/include/iverilog
           cp -r /usr/local/lib/ivl save/lib
-          for i in libvpi.a libvvp.so ; do cp /usr/local/lib/$i save/lib ; done
+          for i in 'libvpi.*' 'libvvp.*' ; do cp /usr/local/lib/$i save/lib ; done
       - name: Save
         uses: actions/upload-artifact@v6
         with:
@@ -94,7 +94,7 @@ jobs:
           cp /usr/local/bin/vvp save/bin
           cp /usr/local/include/iverilog/* save/include/iverilog
           cp -r /usr/local/lib/ivl save/lib
-          for i in libvpi.a libvvp.so ; do cp /usr/local/lib/$i save/lib ; done
+          for i in 'libvpi.*' 'libvvp.*' ; do cp /usr/local/lib/$i save/lib ; done
       - name: Save
         uses: actions/upload-artifact@v6
         with:
