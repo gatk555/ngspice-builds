@@ -31,14 +31,14 @@ jobs:
           make -j4
           make install
           echo Create README.ngspice
-          echo 'This binary package of Ngspice version 46 was built at https://github.com/gatk555/ngspice.' > /usr/local/README.ngspice
+          echo 'This binary package of Ngspice version 47 was built at https://github.com/gatk555/ngspice.' > /usr/local/README.ngspice
           echo 'The source code came from the master branch.' >> /usr/local/README.ngspice
           echo >> /usr/local/README.ngspice
           echo 'Install to /usr/local.' >> /usr/local/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v6
         with:
-          name: Ngspice-46, Linux X86-64
+          name: Ngspice-47, Linux X86-64
           path: /usr/local
   build-macos-x86_64:
     runs-on: macos-15-intel
@@ -70,14 +70,14 @@ jobs:
             cp -r /usr/local/$i/ngspice* build/$i/
           done
           echo Create README.ngspice
-          echo 'This binary package of Ngspice version 46 was built at https://github.com/gatk555/ngspice.' > build/README.ngspice
+          echo 'This binary package of Ngspice version 47 was built at https://github.com/gatk555/ngspice.' > build/README.ngspice
           echo 'The source code came from the master branch.' >> build/README.ngspice
           echo >> build/README.ngspice
           echo 'Install to /usr/local.' >> build/README.ngspice
       - name: Save X86_64
         uses: actions/upload-artifact@v6
         with:
-          name: Ngspice-46, Macos X86_64
+          name: Ngspice-47, Macos X86_64
           path: build
   build-macos-arm64:
     runs-on: macos-14
@@ -120,7 +120,7 @@ jobs:
       - name: Save arm64
         uses: actions/upload-artifact@v6
         with:
-          name: Ngspice-46, Macos ARM64
+          name: Ngspice-47, Macos ARM64
           path: release/build
   build-win_msys:
     runs-on: windows-latest
@@ -155,14 +155,14 @@ jobs:
           cp /ucrt64/bin/libgcc_s_seh-1.dll /C/Spice64/bin
           cp /ucrt64/bin/libwinpthread-1.dll /C/Spice64/bin
           echo Create README.ngspice
-          echo 'This binary package of Ngspice version 46 was built at https://github.com/gatk555/ngspice.' > /C/Spice64/README.ngspice
+          echo 'This binary package of Ngspice version 47 was built at https://github.com/gatk555/ngspice.' > /C/Spice64/README.ngspice
           echo The source code came from the master branch. >> /C/Spice64/README.ngspice
           echo >> /C/Spice64/README.ngspice
           echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v6
         with:
-          name: Ngspice-46, Windows 64-bit with MSYS and UCRT64
+          name: Ngspice-47, Windows 64-bit with MSYS and UCRT64
           path: C:\Spice64
   build-win_mingw:
     runs-on: windows-latest
@@ -197,14 +197,14 @@ jobs:
           cp /mingw64/bin/libgcc_s_seh-1.dll /C/Spice64/bin
           cp /mingw64/bin/libwinpthread-1.dll /C/Spice64/bin
           echo Create README.ngspice
-          echo 'This binary package of Ngspice version 46 was built at https://github.com/gatk555/ngspice.' > /C/Spice64/README.ngspice
+          echo 'This binary package of Ngspice version 47 was built at https://github.com/gatk555/ngspice.' > /C/Spice64/README.ngspice
           echo The source code came from the master branch. >> /C/Spice64/README.ngspice
           echo >> /C/Spice64/README.ngspice
           echo Install to C:\\Spice64. >> /C/Spice64/README.ngspice
       - name: Save
         uses: actions/upload-artifact@v6
         with:
-          name: Ngspice-46, Windows 64-bit with MSYS and MINGW64
+          name: Ngspice-47, Windows 64-bit with MSYS and MINGW64
           path: C:\Spice64
 
   build-win-X64:
@@ -268,7 +268,7 @@ jobs:
           move bin\ngspice.exe bin\ngspice_con.exe
           move bin\gui.exe bin\ngspice.exe
           echo Create README.ngspice
-          echo 'This binary package of Ngspice version 46 was built at https://github.com/gatk555/ngspice.' > C:\Spice64\README.ngspice
+          echo 'This binary package of Ngspice version 47 was built at https://github.com/gatk555/ngspice.' > C:\Spice64\README.ngspice
           echo The source code came from the master branch. >> C:\Spice64\README.ngspice
           echo >> C:\Spice64\README.ngspice
           echo Install to C:\\Spice64. >> C:\Spice64\README.ngspice
@@ -281,5 +281,5 @@ jobs:
       - name: Save
         uses: actions/upload-artifact@v6
         with:
-          name: Ngspice-46, Windows 64-bit (VisualC)
+          name: Ngspice-47, Windows 64-bit (VisualC)
           path: C:\Spice64
